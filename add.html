@@ -1,0 +1,11 @@
+<div ng-controller="TeamcityController">
+  <div class="form-panel">
+    <input type="url" ng-model="newScreenForm.url" placeholder="TeamCity URL" required>
+    <input type="text" ng-model="newScreenForm.username" placeholder="TeamCity username">
+    <input type="password" ng-model="newScreenForm.password" placeholder="TeamCity password">
+    <div class="buttons">
+      <button ng-click="addScreen(newScreenForm)" class="success">Add</button>
+      <button ng-click="cancelAddScreen()" class="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
