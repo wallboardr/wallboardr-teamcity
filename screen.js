@@ -1,12 +1,10 @@
-define([
-    'jquery',
-    'screen/common',
-    'boards/data-loader',
-    'teamcity-api'
-  ], function ($, common) {
+define(['jquery', 'boards/data-loader', 'require', './admin'], function ($, dataLoader, require) {
   'use strict';
-
-  var initScreen = function (data, $board) {
+  var plugin = require('./admin'),
+      getViewData = function (loader, data) {
+        if (!data) {
+          return;
+        }
         var mydata = {
           projectId: 'PP',
           projectTitle: 'Public Pages',
@@ -19,40 +17,21 @@ define([
             {status: 'failure', id: '127'},
           ]
         };
-        var $scr = common.templates.teamcityPipeline(mydata);
-        //$scr.find('.target').load(proxyPrefix + 'nothing', function () {
-          $board.animate({opacity: 0}, function () {
-            $board.html($scr);
-            common.center($board, $scr);
-            $board.animate({opacity: 1});
-          });
-        //});
 
-        return $scr;
+        return $.when(mydata);
       },
-      transition = function (scr, $board) {
-        if (scr.$screen) {
-          $board.animate({opacity: 0}, function () {
-            $board.html(scr.$screen);
-            $board.animate({opacity: 1});
-          });
-        } else {
-          scr.$screen = initScreen(scr.data, $board);
-        }
+      teamcityScreen = function () {
+        var self = this;
+        return {
+          getViewData: function () {
+            return getViewData(dataLoader, self.props.data);
+          },
+          preShow: function () {
+            self.maximizeTextSize();
+          }
+        };
       };
 
-  var TeamcityScreen = function (data, boardProps) {
-    this.data = data;
-    this.duration = data.duration || boardProps.duration;
-    this.$screen = null;
-  };
-
-  TeamcityScreen.prototype.play = function ($board) {
-    transition(this, $board);
-    return common.delay(this.duration);
-  };
-
-  return function (data, boardProps) {
-    return new TeamcityScreen(data, boardProps);
-  };
+  teamcityScreen.config = plugin.config;
+  return teamcityScreen;
 });
