@@ -18,13 +18,18 @@ define([], function () {
           }
           return apiUrl + '/buildTypes/id:' + buildConfigOrId;
         },
+        filterProjects,
         filterBuildConfigurations,
         filterBuilds,
         filterLatestBuild;
 
+    filterProjects = function (data) {
+      return data && data.project;
+    };
+
     TeamCity.prototype.getProjects = function () {
       var endpoint = this.baseUrl + apiUrl + '/projects';
-      return load.call(this, endpoint);
+      return load.call(this, endpoint, filterProjects);
     };
 
     filterBuildConfigurations = function (data) {
