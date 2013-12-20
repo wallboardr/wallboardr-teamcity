@@ -1,10 +1,34 @@
 <div ng-controller="TeamcityController">
-  <div class="form-panel">
-    <input type="url" ng-model="newScreenForm.url" placeholder="TeamCity URL" required>
-    <input type="text" ng-model="newScreenForm.username" placeholder="TeamCity username">
-    <input type="password" ng-model="newScreenForm.password" placeholder="TeamCity password">
+  <div class="form-panel" ng-show="showStep(0)">
+    <input type="url" ng-model="newScreenForm.data.url" placeholder="TeamCity URL" required>
+    <input type="text" ng-model="newScreenForm.data.username" placeholder="TeamCity username">
+    <input type="password" ng-model="newScreenForm.data.password" placeholder="TeamCity password">
     <div class="buttons">
-      <button ng-click="addScreen(newScreenForm)" class="success">Add</button>
+      <button ng-click="getTeamCityProjects(newScreenForm)" class="success">Load</button>
+      <button ng-click="cancelAddScreen()" class="cancel">Cancel</button>
+    </div>
+  </div>
+  <div class="form-panel" ng-show="showStep(1)">
+    <div class="choices">
+      <div class="list-item" ng-repeat="proj in projects" ng-click="chooseProject(newScreenForm, proj)">{{proj.name}}</div>
+    </div>
+    <div class="buttons">
+      <button ng-click="reset()" class="success">&lt; Prev</button>
+      <button ng-click="cancelAddScreen()" class="cancel">Cancel</button>
+    </div>
+  </div>
+  <div class="form-panel" ng-show="showStep(2)">
+    <div class="choices">
+      <div class="list-item" ng-repeat="conf in configs">
+        <div class="form-container">
+          <input id="teamcity-conf-{{conf.id}}" type="checkbox" ng-model="conf.chosen" class="css-checkbox">
+          <label for="teamcity-conf-{{conf.id}}" class="css-label">{{conf.name}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="buttons">
+      <button ng-click="backToProjs()" class="success">&lt; Prev</button>
+      <button ng-click="saveConfigs(newScreenForm)" class="success">Add</button>
       <button ng-click="cancelAddScreen()" class="cancel">Cancel</button>
     </div>
   </div>

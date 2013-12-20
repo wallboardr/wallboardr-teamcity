@@ -1,9 +1,9 @@
-<div class="teamcity-screen 1up">
-	<div class="tc-project {{status}}" id="project{{projectId}}">
-		<h2>{{projectTitle}}</h2>
+<div class="teamcity-screen">
+	<div class="tc-project {{status}}" id="project-{{identifier}}">
+		<h2>{{title}}</h2>
 		<ul>
 			{{#configs}}
-			<li class="build-config {{status}}" id="build{{id}}">&nbsp;</li>
+			<li class="build-config {{status}}" id="build{{id}}">{{name}}</li>
 			{{/configs}}
 		</ul>
 	</div>
