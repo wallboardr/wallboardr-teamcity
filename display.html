@@ -1,0 +1,9 @@
+<div>
+<strong><em>TeamCity Pipeline</em></strong><br>
+Server: {{activeScreen.data.url}}<br>
+Project: {{activeScreen.data.projectName}}<br>
+Configs:
+<ul>
+  <li ng-repeat="conf in activeScreen.data.configs">{{conf.name}}</li>
+</ul>
+</div>

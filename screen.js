@@ -36,7 +36,8 @@ define(['jquery', 'boards/data-loader', 'require', './admin', './teamcity-api'],
               title: data.projectName,
               identifier: data.projectId,
               status: 'success',
-              configs: data.configs
+              configs: data.configs,
+              longestName: 0
             };
 
 
@@ -48,8 +49,14 @@ define(['jquery', 'boards/data-loader', 'require', './admin', './teamcity-api'],
           for (rr = 0; rr < res.length; rr += 1) {
             cStat = res[rr].status.toLowerCase();
             mydata.configs[rr].status = cStat;
+            if (mydata.configs[rr].name && mydata.configs[rr].name.length > 40) {
+              mydata.configs[rr].name = mydata.configs[rr].name.replace(/\s+/g, '&nbsp;');
+            }
             if (cStat !== 'success') {
               mydata.status = 'failure';
+            }
+            if (mydata.configs[rr].name.length > mydata.longestName) {
+              mydata.longestName = mydata.configs[rr].name.length;
             }
           }
           return mydata;
@@ -69,14 +76,28 @@ define(['jquery', 'boards/data-loader', 'require', './admin', './teamcity-api'],
         // };
       },
       teamcityScreen = function () {
-        var self = this;
+        var self = this,
+            viewInfo = {};
         return {
           getViewData: function () {
-            return getStatuses(dataLoader, self.props.data);
+            return getStatuses(dataLoader, self.props.data).then(function (data) {
+              viewInfo.longestName = data.longestName;
+              viewInfo.count = data.configs.length;
+              return data;
+            });
           },
           preShow: function () {
+            var oneCol, twoCol;
             self.$screen.css({'height': 'auto'});
-            self.maximizeTextSize();
+            oneCol = self.maximizeTextSize();
+            if (viewInfo.count > 5) {
+              self.$screen.addClass('columns');
+              twoCol = self.maximizeTextSize();
+              if (oneCol > twoCol) {
+                self.$screen.removeClass('columns');
+                self.$screen.css({'font-size': oneCol + 'px'});
+              }
+            }
             self.$screen.css({'height': '100%'});
           }
         };

@@ -36,6 +36,18 @@ define(['require', './teamcity-api'], function (require) {
             }
           }
           return chosen;
+        },
+        hydrateConfigList = function (clean, reduced) {
+          var outer, inner;
+          for (outer = 0; outer < clean.length; outer += 1) {
+            for (inner = 0; inner < reduced.length; inner += 1) {
+              if (clean[outer].id === reduced[inner].id) {
+                clean[outer].chosen = true;
+                break;
+              }
+            }
+          }
+          return clean;
         };
     $scope.reset = function () {
       $scope.projects = [];
@@ -55,10 +67,21 @@ define(['require', './teamcity-api'], function (require) {
         dataLocation.data.projectId = proj.id;
         dataLocation.data.projectName = proj.name;
         tcApi.getBuildConfigurations(proj).then(function (res) {
-          $scope.configs = res;
+          if (dataLocation.data.configs && dataLocation.data.configs.length > 0) {
+            $scope.configs = hydrateConfigList(res, dataLocation.data.configs)
+          } else {
+            $scope.configs = res;
+          }
           $scope.currentStep = 2;
         });
       }
+    };
+    $scope.projStatus = function (proj) {
+      var classes = [];
+      if ($scope.activeScreenEdit && $scope.activeScreenEdit.data && proj.id === $scope.activeScreenEdit.data.projectId) {
+        classes.push('is-active');
+      }
+      return classes;
     };
     $scope.saveConfigs = function (form, active) {
       var dataLocation = active || form;
@@ -69,6 +92,7 @@ define(['require', './teamcity-api'], function (require) {
         } else {
           $scope.addScreen(form);
         }
+        $scope.reset();
       }
     };
     $scope.getTeamCityProjects = function (form, active) {
@@ -82,6 +106,10 @@ define(['require', './teamcity-api'], function (require) {
           $scope.currentStep = 1;
         });
       }
+    };
+    $scope.cancelEditScreen = function () {
+      $scope.reset();
+      $scope.$parent.cancelEditScreen();
     };
     $scope.reset();
 
