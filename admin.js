@@ -68,7 +68,7 @@ define(['require', './teamcity-api'], function (require) {
         dataLocation.data.projectName = proj.name;
         tcApi.getBuildConfigurations(proj).then(function (res) {
           if (dataLocation.data.configs && dataLocation.data.configs.length > 0) {
-            $scope.configs = hydrateConfigList(res, dataLocation.data.configs)
+            $scope.configs = hydrateConfigList(res, dataLocation.data.configs);
           } else {
             $scope.configs = res;
           }
